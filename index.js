@@ -1,42 +1,47 @@
+// Load the .env
+require('dotenv').load();
+
 // Init socket
-var io = require('socket.io').listen(1080);
+var io = require('socket.io').listen(process.env.PORT || 3000);
 
 // Init CoinMarketCap Api
 var capapi = require('coinmarketcap-api');
 var apiclient = new capapi();
+
+// Declare some vars
 var numberOfSockets = 0;
+var usdPrice = 0;
+var updateTime = new Date();
 var apiconfig = {
-    currency: 'electroneum'
+    currency: process.env.COIN
 };
+
+setInterval(function () {
+    apiclient.getTicker(apiconfig)
+        .then(function (response) {
+            updateTime = new Date();
+            usdPrice = response[0].price_usd;
+            io.sockets.emit('priceUpdate', usdPrice);
+            console.log('Price Updated');
+        })
+        .catch(console.error)
+}, 20000);
 
 io.sockets.on('connection', function (socket) {
 
-    socket.emit('loading', false);
+    socket.emit('initialize', {
+        coinname: apiconfig.currency
+    });
 
     console.log("New connection");
     logTotal(true);
+    socket.emit('priceUpdate', usdPrice);
 
     socket.on('disconnect', function () {
-        console.log('Got disconnect!');
+        console.log('Disconnect');
         logTotal(false);
     });
 
-    socket.on('updatePlz', function (ammountOfCoins) {
-        console.log(ammountOfCoins);
-        apiclient.getTicker(apiconfig)
-            .then(function (response) {
-                var usdPrice = response[0].price_usd;
-                socket.emit('ping', usdPrice);
-            })
-            .catch(console.error);
-    });
-
-    apiclient.getTicker(apiconfig)
-        .then(function (response) {
-            var usdPrice = response[0].price_usd;
-            socket.emit('ping', usdPrice);
-        })
-        .catch(console.error);
 });
 
 // Simple connection counter impl
