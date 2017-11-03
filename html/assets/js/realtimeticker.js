@@ -5,7 +5,7 @@
 angular.module('ticker', ['ngCookies'])
     .controller('realTimeTicker', function ($scope, $cookies) {
 
-        const socket = io.connect('http://localhost:1080');
+        const socket = io.connect('https://electroneum.red:8895');
 
         $scope.status = 'Loading';
         $scope.manyCoins = 1;

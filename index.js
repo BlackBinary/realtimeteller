@@ -1,8 +1,20 @@
 // Load the .env
 require('dotenv').load();
 
+var https = require('https'),
+    fs =    require('fs');  
+
+var options = {
+	    key:    fs.readFileSync(process.env.KEY),
+	    cert:   fs.readFileSync(process.env.CERT)
+};
+var app = https.createServer(options);
+
 // Init socket
-var io = require('socket.io').listen(process.env.PORT || 3000);
+var io = require('socket.io').listen(app);
+
+// Listen to https 8895
+app.listen(process.env.PORT);
 
 // Init CoinMarketCap Api
 var capapi = require('coinmarketcap-api');
