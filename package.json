@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Simple app to count riches",
   "dependencies": {
-    "express": "^4.15.2",
+    "coinmarketcap-api": "^1.0.0",
     "socket.io": "^1.7.3"
   },
   "scripts": {
