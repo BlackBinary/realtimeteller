@@ -3,16 +3,12 @@
 /* Controllers */
 
 angular.module('ticker', ['ngCookies'])
-    .controller('realTimeTicker', function ($scope, $cookies) {
+    .controller('realTimeTicker', function ($scope, $cookieStore) {
 
         const socket = io.connect('https://electroneum.red:8895');
 
         $scope.status = 'Loading';
         $scope.manyCoins = 1;
-
-        if($cookies.lastUsedCoinAmount) {
-            $scope.manyCoins = $cookies.lastUsedCoinAmount;
-        }
 
         socket.on('connect', function () {
             $scope.status = 'Connected';
@@ -29,7 +25,7 @@ angular.module('ticker', ['ngCookies'])
 
         $scope.updateAmount = function () {
             $scope.manyCoins = $scope.coinAmount;
-            $cookies.lastUsedCoinAmount = $scope.manyCoins;
+            $scope.updatePrice();
         };
 
         $scope.updatePrice = function () {

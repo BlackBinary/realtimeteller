@@ -2,11 +2,11 @@
 require('dotenv').load();
 
 var https = require('https'),
-    fs =    require('fs');  
+    fs = require('fs');
 
 var options = {
-	    key:    fs.readFileSync(process.env.KEY),
-	    cert:   fs.readFileSync(process.env.CERT)
+    key: fs.readFileSync(process.env.KEY),
+    cert: fs.readFileSync(process.env.CERT)
 };
 var app = https.createServer(options);
 
